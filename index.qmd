@@ -1,0 +1,7 @@
+---
+title: How to Bash
+author: RF
+---
+
+handy bash commands to remember
+
