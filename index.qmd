@@ -5,3 +5,55 @@ author: RF
 
 handy bash commands to remember
 
+# SSH
+
+create a key
+
+```{bash}
+ssh-keygen
+```
+
+send key to server
+
+```{bash}
+ssh-copy-id -i PATH_TO_KEY username@server
+```
+
+connect to server
+
+```{bash}
+
+ssh -i PATH_TO_KEY username@server
+
+```
+
+check that key is in ~/.ssh/authorized_keys
+
+
+# bash aliases
+
+how to do macros
+
+in ~/.bashrc check that there is or add, to separate your aliases from other setups
+
+```{bash}
+if [ -f ~/.bash_aliases ]; then
+    . ~/.bash_aliases
+fi
+```
+
+then edit ~/.bash_aliases
+
+example
+```{bash}
+alias ..="cd .."
+alias ...="cd ../../"
+alias ....="cd ../../../"
+alias sizeof="du -sh"
+alias vibashrc="vi ~/.bashrc"
+alias vibashalias="vi ~/.bash_aliases"
+alias sourcebrc="source ~/.bashrc"
+```
+
+
+# PATH
