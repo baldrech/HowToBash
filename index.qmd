@@ -5,31 +5,6 @@ author: RF
 
 handy bash commands to remember
 
-# SSH
-
-create a key
-
-```{bash}
-ssh-keygen
-```
-
-send key to server
-
-```{bash}
-ssh-copy-id -i PATH_TO_KEY username@server
-```
-
-connect to server
-
-```{bash}
-
-ssh -i PATH_TO_KEY username@server
-
-```
-
-check that key is in ~/.ssh/authorized_keys
-
-
 # bash aliases
 
 how to do macros
@@ -55,5 +30,208 @@ alias vibashalias="vi ~/.bash_aliases"
 alias sourcebrc="source ~/.bashrc"
 ```
 
+list of all alias
+
+```{bash}
+alias -p
+```
+
+remove alias
+
+```{bash}
+unalias aliasname
+
+unalias -a # all
+```
+
+
+# SSH
+
+create a key
+
+```{bash}
+ssh-keygen
+```
+
+send key to server
+
+```{bash}
+ssh-copy-id -i PATH_TO_KEY username@server
+```
+
+connect to server
+
+```{bash}
+
+ssh -i PATH_TO_KEY username@server
+
+```
+
+check that key is in ~/.ssh/authorized_keys
+
+edit the config file
+To avoid using the -i argument every time, one can use an alias but a better method is to store the information in .ssh/config such as
+
+```{bash}
+Host ssh_name
+        HostName server_address
+        User romainf
+        IdentityFile ~/.ssh/path_to_key
+```
+
+Then you can use the ssh_name to connect directly to the server as ssh ssh_name. You can even condense it in an alias. This is practical to use scp (cpying through ssh)
+
+Copying to and from server. We assume that .ssh/config exists and is setup. Once it's done it's pretty easy to use scp. scp uses : to distinguish from remote to local.
+
+```{bash}
+# copy from local to server
+scp file.txt ssh_name:file.txt
+# copy from server to local
+scp ssh_name:file.txt file.txt
+```
+
+At the moment running the command only from local. Maybe can do it from server if .ssh/config exists there too?
+
 
 # PATH
+
+in .bashrc you need to export new PATH to be able to use executable from anywhere in the machine. The command below will allow to use executables in ~/myFolder/bin/
+
+```{bash}
+
+export PATH="~/myFolder/bin:$PATH"
+
+```
+
+another convenient thing to add in .bashrc is global variable, the same way as adding things to the path. Then these variables can be used in bash scripts
+
+```{bash}
+export R_HOME=/home/romainf/R/
+```
+
+Now when using ${R_HOME}, this will call the path saved above.
+
+# GitHub
+
+There is no default credential store (besides the git one that lasts only 900'') so the best method is to use pass and GPG
+
+```{bash}
+
+sudo apt install pass
+sudo apt install gpg
+
+gpg --gen-key # this will generate a gpg-id and ask for passphrase
+
+pass init gpg-id
+
+git config --global credential.credentialStore gpg
+
+```
+
+
+# How to install without being root (on a server for example)
+
+```{bash}
+apt-get download package_name
+
+dpkg -x package.deb dir # dir is where you want to install it
+```
+
+Then export new PATH to /bin
+
+
+# Vim
+
+vim is pretty cool when properly configured.
+
+First lets install Vundle, a vim plugin manager
+
+```{bash}
+
+git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
+```
+
+Then create a .vimrc if not already there and add at the beginning:
+
+```{}
+set nocompatible              " be iMproved, required
+filetype off                  " required
+
+" set the runtime path to include Vundle and initialize
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+" alternatively, pass a path where Vundle should install plugins
+"call vundle#begin('~/some/path/here')
+
+" let Vundle manage Vundle, required
+Plugin 'VundleVim/Vundle.vim'
+
+" The following are examples of different formats supported.
+" Keep Plugin commands between vundle#begin/end.
+" plugin on GitHub repo
+Plugin 'tpope/vim-fugitive'
+" plugin from http://vim-scripts.org/vim/scripts.html
+" Plugin 'L9'
+" Git plugin not hosted on GitHub
+Plugin 'git://git.wincent.com/command-t.git'
+" git repos on your local machine (i.e. when working on your own plugin)
+Plugin 'file:///home/gmarik/path/to/plugin'
+" The sparkup vim script is in a subdirectory of this repo called vim.
+" Pass the path to set the runtimepath properly.
+Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
+" Install L9 and avoid a Naming conflict if you've already installed a
+" different version somewhere else.
+" Plugin 'ascenator/L9', {'name': 'newL9'}
+
+" All of your Plugins must be added before the following line
+call vundle#end()            " required
+filetype plugin indent on    " required
+" To ignore plugin indent changes, instead use:
+"filetype plugin on
+"
+" Brief help
+" :PluginList       - lists configured plugins
+" :PluginInstall    - installs plugins; append `!` to update or just :PluginUpdate
+" :PluginSearch foo - searches for foo; append `!` to refresh local cache
+" :PluginClean      - confirms removal of unused plugins; append `!` to auto-approve removal
+"
+" see :h vundle for more details or wiki for FAQ
+" Put your non-Plugin stuff after this line
+```
+
+Then run
+
+```{bash}
+vim +PluginInstall +qall
+```
+
+Nice plugin for colors
+
+```{}
+" papercolor
+Plugin 'NLKNguyen/papercolor-theme'
+```
+
+Other options for vim
+
+```{}
+set number
+
+set background=dark
+color PaperColor 
+
+" vim-powered terminal in split window
+map <Leader>t :term ++close<cr>
+tmap <Leader>t <c-w>:term ++close<cr>
+```
+
+# Tar balls
+
+Tar extension is a compressed library of multiple .zip (I think) to extract them you cannot use unzip, use instead
+
+```{bash}
+
+tar -xf file.tar.gz -C /path_to_extract_to
+
+```
+
